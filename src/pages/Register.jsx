@@ -74,8 +74,8 @@ function Register() {
                 <span className='title'>Register</span>
                 <form onSubmit={handleSubmit}>
                     <input type='text' placeholder='Display name' />
-                    <input type='email' />
-                    <input type='password' />
+                    <input type='email' placeholder='Enter Your Email'/>
+                    <input type='password' placeholder='Enter Your Password'/>
                     <input type='file' />
                     <button type='submit'>Sign Up</button>
                 </form>

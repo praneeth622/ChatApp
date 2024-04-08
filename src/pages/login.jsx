@@ -33,8 +33,8 @@ function Login(props) {
                 <span className='logo'>OurChat</span>
                 <span className='title'>Login</span>
                 <form onSubmit={handleSubmit}>
-                    <input type='email' />
-                    <input type='password' />
+                    <input type='email' placeholder='Enter Your Email'/>
+                    <input type='password' placeholder='Enter Your Password' />
                     <button type='submit'>Sign Up</button>
                 </form>
                 {error && <span>Something went wrong</span>}

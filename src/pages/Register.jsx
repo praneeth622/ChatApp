@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
-import {  createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from '../firebase';
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth, db, storage } from '../firebase';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { doc, setDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom"; 
+function Register() {
+    const [error, setError] = useState(false);
+    
+    const navigate = useNavigate()
 
-function Register(props) {
-    const [error,setError]= useState(false)
     const handleSubmit = async (e) => {
         e.preventDefault();
         const displayName = e.target[0].value;
@@ -12,33 +16,56 @@ function Register(props) {
         const password = e.target[2].value;
         const file = e.target[3].files[0];
 
-        try{
-            const response = await createUserWithEmailAndPassword(auth, email, password)
-            const user = response.user;
-            console.log(user)
-            const storage = getStorage();
+        try {
+            const res = await createUserWithEmailAndPassword(auth, email, password);
+            const user = res.user;
+            console.log(user);
+
             const storageRef = ref(storage, displayName);
             const uploadTask = uploadBytesResumable(storageRef, file);
 
             uploadTask.on(
                 (error) => {
-                    setError(true)
-                  }, 
-                  () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-                      await updateProfile(response.user,{
-                        displayName,
-                        photoURL:downloadURL
-                      })
-                    });
-                  }
-                );
+                    setError(true);
+                },
+                async () => {
+                    try {
+                        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+
+                        // Update profile
+                        await updateProfile(user, {
+                            displayName,
+                            photoURL: downloadURL,
+                        });
+
+                        // Create user on firestore
+                        await setDoc(doc(db, "users", user.uid), {
+                            uid: user.uid,
+                            displayName,
+                            email,
+                            photoURL: downloadURL,
+                        });
+                        console.log("Data Stored in database successfully")
+                        // Create empty user chats on firestore
+                        await setDoc(doc(db, "userChats", user.uid), {
+
+                        });
+                        // history.push('/');
+                        navigate('/')
+
+
+                        // Navigation logic here
+                    } catch (err) {
+                        console.log(err);
+                        setError(true);
+                    }
+                }
+            );
+        } catch (err) {
+            console.log("We Got An Error in saving user ", err);
+            setError(true);
         }
-        catch(err){
-            console.log("We Got An Error in saving user ", err )
-            setError(true)
-        }
-    }
+    };
 
     return (
         <div className='formContainer'>

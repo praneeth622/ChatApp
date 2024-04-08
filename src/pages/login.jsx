@@ -13,7 +13,7 @@ function Login(props) {
         try{
             const res = await signInWithEmailAndPassword(auth, email, password)
             const user = res.user
-            console.log(user)
+            // console.log(user)
             console.log("Login Sucess")
             navigate('/')
         }

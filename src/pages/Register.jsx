@@ -3,7 +3,7 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, db, storage } from '../firebase';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate, Link } from "react-router-dom"; 
 function Register() {
     const [error, setError] = useState(false);
     
@@ -80,7 +80,7 @@ function Register() {
                     <button type='submit'>Sign Up</button>
                 </form>
                 {error && <span>Something went wrong</span>}
-                <p>Already Existing User, Login</p>
+                <p>Already Existing User, <Link to="/login">Login</Link></p>
             </div>
         </div>
     );

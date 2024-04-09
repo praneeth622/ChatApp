@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faVideo, faUserPlus, faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import Messsage from './Message';
 import Input from './Input';
+import { ChatContext } from '../../context/ChatContext';
 function Chat(props) {
+    const {data} = useContext(ChatContext)
     return (
         <div className='chat'>
             <div className="chatInfo">
-                <span>john</span>
+                <span>{data.user?.displayName}</span>
                 <div className="chatIcons">
                 <FontAwesomeIcon icon={faVideo} />
                 <FontAwesomeIcon icon={faUserPlus} />
